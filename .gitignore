@@ -1,0 +1,4 @@
+# Entorno de desarrollo Rust
+/rust/target/
+**/*.rs.bk
+Cargo.lock

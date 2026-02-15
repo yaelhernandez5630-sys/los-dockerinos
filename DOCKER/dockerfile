@@ -1,0 +1,1 @@
+# Nota: Para el avance actual, los workers se levantan directamente desde el docker-compose.yml usando nginx:alpine.

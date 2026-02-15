@@ -1,0 +1,11 @@
+version: '3.8'
+
+services:
+  worker:
+    image: nginx:alpine
+    container_name: gen_worker
+    deploy:
+      replicas: 4
+    ports:
+      - "8080-8083:80"
+    restart: unless-stopped
