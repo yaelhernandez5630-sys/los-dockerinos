@@ -3,9 +3,8 @@ version: '3.8'
 services:
   worker:
     image: nginx:alpine
-    container_name: gen_worker
     deploy:
       replicas: 4
     ports:
-      - "8080-8083:80"
+      - "10.10.10.2:8080-8083:80" #Aqui va la IP establecida para cada uno de ustedes
     restart: unless-stopped
