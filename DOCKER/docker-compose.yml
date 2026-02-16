@@ -1,0 +1,10 @@
+version: '3.8'
+
+services:
+  worker:
+    image: nginx:alpine
+    deploy:
+      replicas: 4
+    ports:
+      - "10.10.10.2:8080-8083:80"
+    restart: unless-stopped
