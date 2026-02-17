@@ -1,39 +1,39 @@
-  version: '3.8'
+version: '3.8'
 
-  services:
-    worker-1:
-      build:
-        context: .. # Sube un nivel para ver la carpeta /rust
-        dockerfile: docker/Dockerfile
-      container_name: rust_worker_1
-      network_mode: "host" # Usa la red wg0 directamente
-      # Le pasamos los argumentos que programamos en main.rs
-      command: ["./mandelbrot_distribuido", "worker", "10.10.10.1", "Worker-Rogelio-1"]
-      restart: unless-stopped
+services:
+  worker-1:
+    build:
+      context: .. # Sube un nivel para ver la carpeta /rust
+      dockerfile: docker/Dockerfile
+    container_name: rust_worker_1
+    network_mode: "host" # Usa la red wg0 directamente
+    # Le pasamos los argumentos que programamos en main.rs
+    command: ["./mandelbrot_distribuido", "worker", "10.10.10.1", "Worker-Rogelio-1"]
+    restart: unless-stopped
 
-    worker-2:
-      build:
-        context: ..
-        dockerfile: docker/Dockerfile
-      container_name: rust_worker_2
-      network_mode: "host"
-      command: ["./mandelbrot_distribuido", "worker", "10.10.10.1", "Worker-(Cambiar su nombre)-2"]
-      restart: unless-stopped
+  worker-2:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile
+    container_name: rust_worker_2
+    network_mode: "host"
+    command: ["./mandelbrot_distribuido", "worker", "10.10.10.1", "Worker-Rogelio-2"]
+    restart: unless-stopped
 
-    worker-3:
-      build:
-        context: ..
-        dockerfile: docker/Dockerfile
-      container_name: rust_worker_3
-      network_mode: "host"
-      command: ["./mandelbrot_distribuido", "worker", "10.10.10.1", "Worker-(Cambiar su nombre)-3"]
-      restart: unless-stopped
+  worker-3:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile
+    container_name: rust_worker_3
+    network_mode: "host"
+    command: ["./mandelbrot_distribuido", "worker", "10.10.10.1", "Worker-Rogelio-3"]
+    restart: unless-stopped
 
-    worker-4:
-      build:
-        context: ..
-        dockerfile: docker/Dockerfile
-      container_name: rust_worker_4
-      network_mode: "host"
-      command: ["./mandelbrot_distribuido", "worker", "10.10.10.1", "Worker-(Cambiar su nombre)-4"]
+  worker-4:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile
+    container_name: rust_worker_4
+    network_mode: "host"
+    command: ["./mandelbrot_distribuido", "worker", "10.10.10.1", "Worker-Rogelio-4"]
     restart: unless-stopped
