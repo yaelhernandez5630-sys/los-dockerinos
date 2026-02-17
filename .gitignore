@@ -1,4 +1,11 @@
-# Entorno de desarrollo Rust
+# Archivos compilados de Rust
 /rust/target/
 **/*.rs.bk
-Cargo.lock
+
+# Archivos de entorno y SO
+.env
+.DS_Store
+
+# Ocultar llaves privadas 
+*.key
+privatekey
