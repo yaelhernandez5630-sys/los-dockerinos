@@ -4,8 +4,48 @@
 
 # Archivos de entorno y SO
 .env
+.env.local
+.env.*.local
 .DS_Store
 
-# Ocultar llaves privadas 
+# 🔐 SEGURIDAD: Ocultar claves y configs sensibles
 *.key
 privatekey
+*.conf
+!VPN/configuraciones_sanitizadas/*.conf
+!VPN/hub_wg0_real.conf
+/etc/wireguard/*.conf
+/etc/wireguard/privatekey
+/etc/wireguard/publickey
+
+# Logs y archivos temporales
+*.log
+logs/
+tmp/
+*.pid
+*.cache
+
+# IDE y editores
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Docker
+.dockerignore
+
+# Backup y archivos viejos
+*.backup
+*.old
+*.bak
+*.orig
+*.temp
+
+# Node.js (si se usa)
+node_modules/
+package-lock.json
+
+# Sistema
+.DS_Store
+Thumbs.db

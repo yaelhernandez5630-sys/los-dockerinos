@@ -1,0 +1,34 @@
+# Template de configuración WireGuard
+# Copiar a /etc/wireguard/wg0.conf y ajustar según tus datos
+
+[Interface]
+# 🔐 GENERAR TU PROPIA CLAVE: wg genkey | tee privatekey | wg pubkey > publickey
+PrivateKey = TU_CLAVE_PRIVADA_AQUI
+Address = 10.10.10.X/24  # Cambiar X por tu IP asignada
+ListenPort = 51820      # Solo para el hub (10.10.10.1)
+
+# 🌐 Reglas de NAT para Internet
+PostUp = iptables -A FORWARD -i %i -j ACCEPT; iptables -t nat -A POSTROUTING -o eth0 -j MASQUERADE
+PostDown = iptables -D FORWARD -i %i -j ACCEPT; iptables -t nat -D POSTROUTING -o eth0 -j MASQUERADE
+
+# 👥 PEERS - Agregar según corresponda
+# Hub (10.10.10.1)
+[Peer]
+PublicKey = CLAVE_PUBLICA_DEL_HUB
+Endpoint = IP_PUBLICA_DEL_HUB:51820
+AllowedIPs = 10.10.10.1/32
+
+# Spoke 1 (10.10.10.2)
+[Peer]
+PublicKey = CLAVE_PUBLICA_DEL_SPOKE1
+AllowedIPs = 10.10.10.2/32
+
+# Spoke 2 (10.10.10.3)
+[Peer]
+PublicKey = CLAVE_PUBLICA_DEL_SPOKE2
+AllowedIPs = 10.10.10.3/32
+
+# Spoke 3 (10.10.10.4)
+[Peer]
+PublicKey = CLAVE_PUBLICA_DEL_SPOKE3
+AllowedIPs = 10.10.10.4/32
