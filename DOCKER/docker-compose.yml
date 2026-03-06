@@ -48,6 +48,6 @@ services:
     network_mode: "host"
     environment:
       - COORDINATOR_ENDPOINT=10.10.10.3:3000  # Cambiar X por tu IP
-      - WORKER_ID=worker-tu-axel-4
+      - WORKER_ID=worker-axel-4
     command: ["./mandelbrot_distribuido", "worker"]
     restart: unless-stopped
