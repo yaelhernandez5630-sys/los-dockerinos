@@ -11,7 +11,7 @@ services:
     network_mode: "host"
     environment:
       # 🔧 AJUSTAR según tu IP de VPN
-      - COORDINATOR_ENDPOINT=10.10.10.3:3000  # Cambiar X por tu IP
+      - COORDINATOR_ENDPOINT=10.10.10.1:3000  # Cambiar X por tu IP
       - WORKER_ID=worker-axel-1
     command: ["./mandelbrot_distribuido", "worker"]
     restart: unless-stopped
@@ -23,7 +23,7 @@ services:
     container_name: rust_worker_2
     network_mode: "host"
     environment:
-      - COORDINATOR_ENDPOINT=10.10.10.3:3000  # Cambiar X por tu IP
+      - COORDINATOR_ENDPOINT=10.10.10.1:3000  # Cambiar X por tu IP
       - WORKER_ID=worker-axel-2
     command: ["./mandelbrot_distribuido", "worker"]
     restart: unless-stopped
@@ -35,7 +35,7 @@ services:
     container_name: rust_worker_3
     network_mode: "host"
     environment:
-      - COORDINATOR_ENDPOINT=10.10.10.3:3000  # Cambiar X por tu IP
+      - COORDINATOR_ENDPOINT=10.10.10.1:3000  # Cambiar X por tu IP
       - WORKER_ID=worker-axel-3
     command: ["./mandelbrot_distribuido", "worker"]
     restart: unless-stopped
@@ -47,7 +47,7 @@ services:
     container_name: rust_worker_4
     network_mode: "host"
     environment:
-      - COORDINATOR_ENDPOINT=10.10.10.3:3000  # Cambiar X por tu IP
+      - COORDINATOR_ENDPOINT=10.10.10.1:3000  # Cambiar X por tu IP
       - WORKER_ID=worker-axel-4
     command: ["./mandelbrot_distribuido", "worker"]
     restart: unless-stopped
