@@ -6,8 +6,9 @@
 |------|-------|
 | **Nodo** | Nodo 2 (gabolectric) |
 | **IP VPN (WireGuard)** | `10.10.10.2` |
-| **Puertos** | `8080`, `8081`, `8082`, `8083` |
-| **Imagen** | `nginx:alpine` |
+| **Rol** | Workers (4 contenedores) |
+| **Coordinator** | `10.10.10.1:3000` (nodo hub) |
+| **Imagen** | Rust Alpine (compilación multi-stage) |
 | **Interfaz VPN** | `wg0` |
 
 ---
@@ -54,7 +55,7 @@ sudo systemctl enable docker
 
 ---
 
-## Levantar los 4 Workers
+## Levantar los 4 Workers con Rust
 
 ### Paso 1: Ir al directorio DOCKER del proyecto
 
@@ -62,12 +63,15 @@ sudo systemctl enable docker
 cd los-dockerinos/DOCKER
 ```
 
-### Paso 2: Levantar los contenedores
+### Paso 2: Compilar y levantar los contenedores
 
 ```bash
-# Levantar los 4 workers en modo "detached" (segundo plano)
-sudo docker compose up -d
+# Compilar la imagen Rust y levantar los 4 workers en modo "detached"
+sudo docker compose up -d --build
 ```
+
+> **Nota:** La primera compilación puede tardar varios minutos porque Rust descarga
+> y compila todas las dependencias. Las siguientes serán más rápidas gracias al cache.
 
 ### Paso 3: Verificar que estén corriendo
 
@@ -75,44 +79,45 @@ sudo docker compose up -d
 sudo docker ps
 ```
 
-Deberías ver 4 contenedores con nombres auto-generados como:
+Deberías ver 4 contenedores con el algoritmo Mandelbrot:
 
 ```
-CONTAINER ID   IMAGE          COMMAND                  STATUS          PORTS                          NAMES
-xxxxxxxxxxxx   nginx:alpine   "/docker-entrypoint.…"   Up X seconds   10.10.10.2:8080->80/tcp        docker-worker-1
-xxxxxxxxxxxx   nginx:alpine   "/docker-entrypoint.…"   Up X seconds   10.10.10.2:8081->80/tcp        docker-worker-2
-xxxxxxxxxxxx   nginx:alpine   "/docker-entrypoint.…"   Up X seconds   10.10.10.2:8082->80/tcp        docker-worker-3
-xxxxxxxxxxxx   nginx:alpine   "/docker-entrypoint.…"   Up X seconds   10.10.10.2:8083->80/tcp        docker-worker-4
+CONTAINER ID   IMAGE                    COMMAND                  STATUS          NAMES
+xxxxxxxxxxxx   docker-mandelbrot_...    "./mandelbrot_dist..."   Up X seconds    rust_worker_gabolectric_1
+xxxxxxxxxxxx   docker-mandelbrot_...    "./mandelbrot_dist..."   Up X seconds    rust_worker_gabolectric_2
+xxxxxxxxxxxx   docker-mandelbrot_...    "./mandelbrot_dist..."   Up X seconds    rust_worker_gabolectric_3
+xxxxxxxxxxxx   docker-mandelbrot_...    "./mandelbrot_dist..."   Up X seconds    rust_worker_gabolectric_4
 ```
-
-> **Nota:** Al no definir `container_name`, Docker Compose genera nombres automáticos
-> con el formato `{carpeta}-{servicio}-{número}`.
 
 ---
 
 ## Verificación de Conectividad
 
-### Verificar acceso local a los workers
+### Verificar logs de los workers
 
 ```bash
-curl http://10.10.10.2:8080
-curl http://10.10.10.2:8081
-curl http://10.10.10.2:8082
-curl http://10.10.10.2:8083
+# Ver logs de todos los workers
+sudo docker compose logs
+
+# Ver logs de un worker específico
+sudo docker compose logs worker-1
+
+# Seguir logs en tiempo real
+sudo docker compose logs -f
 ```
 
-Cada comando debe devolver la página de bienvenida de Nginx.
-
-### Verificar acceso desde otros nodos de la VPN
-
-Desde otro nodo (ej. el hub `10.10.10.1`):
-
-```bash
-curl http://10.10.10.2:8080
-curl http://10.10.10.2:8081
-curl http://10.10.10.2:8082
-curl http://10.10.10.2:8083
+Deberías ver mensajes como:
 ```
+⚙️ Modo Worker
+🔗 Conectando a: 10.10.10.1:3000
+🆔 Worker ID: worker-gabolectric-1
+Worker worker-gabolectric-1: Recibió tarea 1 para región...
+```
+
+### Verificar conectividad con el Coordinator
+
+Los workers se conectan automáticamente al coordinator en `10.10.10.1:3000`.
+Asegúrate de que el nodo hub (10.10.10.1) tenga el coordinator corriendo.
 
 ---
 
@@ -157,9 +162,10 @@ iperf3 -c 10.10.10.1
 1. `sudo wg show` — Estado de la VPN
 2. `ip a show wg0` — Interfaz WireGuard
 3. `ping 10.10.10.1` — Conectividad al hub
-4. `sudo docker ps` — Contenedores activos
-5. `curl http://10.10.10.2:8080` — Respuesta de un worker
-6. Contenido del `docker-compose.yml`
+4. `sudo docker ps` — Contenedores activos (4 workers Rust)
+5. `sudo docker compose logs worker-1` — Logs de un worker
+6. Contenido del `docker-compose.yml` y `Dockerfile`
+7. Evidencia de que los workers se conectan al coordinator
 
 ---
 
@@ -173,16 +179,20 @@ ping -c 3 10.10.10.1
 # 2. Ir al directorio
 cd los-dockerinos/DOCKER
 
-# 3. Levantar 4 workers
-sudo docker compose up -d
+# 3. Compilar y levantar 4 workers Rust
+sudo docker compose up -d --build
 
 # 4. Verificar
 sudo docker ps
-curl http://10.10.10.2:8080
-curl http://10.10.10.2:8081
-curl http://10.10.10.2:8082
-curl http://10.10.10.2:8083
+sudo docker compose logs -f
 
 # 5. (Opcional) Detener
 sudo docker compose down
 ```
+
+## Notas Importantes
+
+- **Primera compilación:** Puede tardar 5-10 minutos dependiendo de tu CPU/RAM
+- **Network mode host:** Los workers usan la red del host para acceder a la VPN
+- **Coordinator:** Debe estar corriendo en 10.10.10.1:3000 antes de levantar workers
+- **Logs:** Usa `docker compose logs -f` para ver la actividad en tiempo real
