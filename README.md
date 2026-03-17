@@ -115,3 +115,12 @@ COORDINATOR_ENDPOINT=10.10.10.1:3000 WORKER_ID=worker-fysico-01 cargo run -- wor
 git clone https://github.com/yaelhernandez5630-sys/los-dockerinos.git
 cd los-dockerinos
 ```
+
+## Cómo correr este proyecto (Para el profesor)
+
+1. **Levantar VPN:** `sudo wg-quick up wg0`
+2. **Construir y correr Workers:**
+   ```bash
+   cd docker
+   sudo docker-compose up --build -d
+   ```
