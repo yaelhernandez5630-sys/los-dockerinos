@@ -116,7 +116,7 @@ git clone https://github.com/yaelhernandez5630-sys/los-dockerinos.git
 cd los-dockerinos
 ```
 
-## Cómo correr este proyecto (Para el profesor)
+## Cómo correr este proyecto
 
 1. **Levantar VPN:** `sudo wg-quick up wg0`
 2. **Construir y correr Workers:**
